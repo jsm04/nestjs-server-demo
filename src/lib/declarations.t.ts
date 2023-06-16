@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 declare interface GenericRepository<TEntity, TKey> {
+	list(): Promise<TEntity[] | null>
 	create(data: TEntity): Promise<TEntity>
-	get(id?: TKey): Promise<TEntity[] | null>
+	getById(id: TKey): Promise<TEntity | null>
 	update(id: TKey, data: TEntity): Promise<TEntity>
 	delete(id: TKey): Promise<TEntity>
 }

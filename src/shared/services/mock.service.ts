@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker'
 import { Injectable } from '@nestjs/common'
-import { User } from '../users/entities/user.interface'
+import { User } from '../../modules/Users/entities/user.interface'
 
 @Injectable()
 export class MockService {

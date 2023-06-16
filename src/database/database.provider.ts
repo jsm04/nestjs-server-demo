@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose'
-import { PROVIDER_TOKENS } from '../lib/global-constants'
+import { PROVIDER_TOKENS } from '../configs/constants'
 
 export const databaseProviders = [
 	{

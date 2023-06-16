@@ -1,10 +1,12 @@
 import { Global, Module } from '@nestjs/common'
-import { CustomLogger } from './custom-logger.service'
-import { MockService } from './mock.service'
+import { ControllerExeptionManager } from './exeptions/exeption.manager'
+import { EncryptionService } from './services/encryption.service'
+import { FslogService } from './services/fslog.service'
+import { MockService } from './services/mock.service'
 
 @Global()
 @Module({
-	providers: [MockService, CustomLogger],
-	exports: [MockService, CustomLogger],
+	providers: [MockService, FslogService, ControllerExeptionManager, EncryptionService],
+	exports: [MockService, FslogService, ControllerExeptionManager, EncryptionService],
 })
 export class SharedModule {}

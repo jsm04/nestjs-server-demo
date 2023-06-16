@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { Logger, createLogger, format, transports } from 'winston'
 
 @Injectable()
-export class CustomLogger {
+export class FslogService {
 	private logger: Logger
 	private directory = process.env.LOGS_DIR
 
@@ -40,5 +40,3 @@ export class CustomLogger {
 		this.logger.info(message)
 	}
 }
-
-

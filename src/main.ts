@@ -12,8 +12,10 @@ async function bootstrap() {
 	const configService = app.get(ConfigService)
 	const port = configService.get('PORT')
 
-	app.enableCors()
+	app.setGlobalPrefix('api/v1')
+
 	app.use(compression())
+	app.enableCors()
 	app.use(helmet())
 
 	app.useGlobalPipes(
