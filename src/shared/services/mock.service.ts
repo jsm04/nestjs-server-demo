@@ -13,6 +13,7 @@ export class MockService {
 			username: faker.internet.userName(),
 			sex: faker.name.sex(),
 			password: faker.internet.password(),
+			role: 'user',
 		}
 		return user
 	}

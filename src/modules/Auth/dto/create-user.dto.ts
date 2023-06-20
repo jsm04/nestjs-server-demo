@@ -1,7 +1,7 @@
 import { IsAlphanumeric, IsEmail, IsNotEmpty, IsNumber, IsString, MaxLength, MinLength } from 'class-validator'
 import { User } from '../../Users/entities/user.interface'
 
-export class CreateUserDTO implements User {
+export class CreateUserDTO implements Omit<User, 'role'> {
 	@MaxLength(32)
 	@IsString()
 	@IsNotEmpty()

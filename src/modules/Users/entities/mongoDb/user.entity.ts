@@ -1,4 +1,5 @@
 import { Schema } from 'mongoose'
+import { availableRoles } from '../../../../configs/constants'
 import { User } from '../user.interface'
 
 export class UserMongoEntity {
@@ -12,6 +13,7 @@ export class UserMongoEntity {
 				username: { type: String, required: true, unique: true },
 				email: { type: String, required: true, unique: true },
 				age: { type: Number, required: true },
+				role: { type: String, enum: [...availableRoles], default: 'user' },
 			},
 			{ timestamps: true },
 		)

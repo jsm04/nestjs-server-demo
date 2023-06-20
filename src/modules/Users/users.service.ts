@@ -30,7 +30,7 @@ export class UsersService {
 	}
 
 	public async create(user: CreateUserDTO): Promise<boolean> {
-		const query = await this.userRepository.create(user)
+		const query = await this.userRepository.create(user as User)
 		return query ? true : false
 	}
 

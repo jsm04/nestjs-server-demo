@@ -1,3 +1,5 @@
+import {Roles} from '../../../configs/constants'
+
 export interface User {
 	firstname: string
 	lastname: string
@@ -5,5 +7,6 @@ export interface User {
 	email: string
 	username: string
 	password: string
+	role: Roles
 	sex: string
 }
