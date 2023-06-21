@@ -1,7 +1,6 @@
 import { Body, Controller, Get, Inject, Param, Post } from '@nestjs/common'
 import { ForbiddenException } from '@nestjs/common/exceptions'
 import { ObjectId } from 'mongoose'
-import { Public } from '../../shared/decorators/public.decorator'
 import { ControllerExeptionManager } from '../../shared/exeptions/exeption.manager'
 import { MongoObjectIdValidationPipe } from '../../shared/pipes'
 import { MockService } from '../../shared/services/mock.service'
@@ -17,7 +16,6 @@ export class UsersController {
 
 	constructor(private readonly usersService: UsersService) {}
 
-	@Public()
 	@Get('list')
 	async listUsers() {
 		try {

@@ -12,6 +12,18 @@ export const ROLES = {
 	user: 'user',
 } as const
 
+export const availableRoles = Object.values(ROLES)
+
 export type Roles = keyof typeof ROLES
 
-export const availableRoles = Object.values(ROLES)
+type AuthenticatedRolesOmit = Omit<typeof ROLES, 'user'>
+
+export type AuthenticatedRoles = keyof AuthenticatedRolesOmit
+
+export type TokenSingedContent<TKey> = {
+	sub: TKey
+	email: string
+	role: Roles
+}
+
+export type SingedUserRequest<TKey> = Request & Record<'user', TokenSingedContent<TKey>>
