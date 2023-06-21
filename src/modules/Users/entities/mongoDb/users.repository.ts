@@ -1,12 +1,13 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { Model, ObjectId } from 'mongoose'
-import { PROVIDER_TOKENS } from '../../../../configs/constants'
+import { PROVIDERS } from '../../../../shared/constants/tokens'
+import { UsersRepository } from '../../../../shared/types/interfaces'
 import { UpdateUserDTO } from '../../dto/update-user.dto'
 import { User } from '../user.interface'
 
 @Injectable()
 export class UsersMongoRepository implements UsersRepository<User, ObjectId> {
-	constructor(@Inject(PROVIDER_TOKENS.USER_MODEL) private userModel: Model<User>) {}
+	constructor(@Inject(PROVIDERS.USER_MODEL) private userModel: Model<User>) {}
 
 	public async create(payload: User): Promise<User> {
 		return await this.userModel.create(payload)

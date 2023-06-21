@@ -1,0 +1,4 @@
+export const PROVIDERS = {
+	USER_MODEL: Symbol('USER_MODEL'),
+	MONGODB_CONNECTION: Symbol('DATABASE_CONNECTION'),
+}

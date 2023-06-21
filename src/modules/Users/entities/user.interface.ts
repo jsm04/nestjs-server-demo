@@ -1,4 +1,4 @@
-import {Roles} from '../../../configs/constants'
+import { Roles } from '../../../shared/types'
 
 export interface User {
 	firstname: string

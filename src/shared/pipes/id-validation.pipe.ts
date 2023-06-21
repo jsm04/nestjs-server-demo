@@ -7,6 +7,6 @@ export class MongoObjectIdValidationPipe implements PipeTransform {
 		if (Types.ObjectId.isValid(value)) {
 			return value
 		}
-		throw new BadRequestException('ID validation failed')
+		throw new BadRequestException('Id validation failed')
 	}
 }

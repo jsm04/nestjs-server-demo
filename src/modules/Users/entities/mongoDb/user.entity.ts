@@ -1,5 +1,5 @@
 import { Schema } from 'mongoose'
-import { availableRoles } from '../../../../configs/constants'
+import { availableRoles } from '../../../../shared/constants/constants'
 import { User } from '../user.interface'
 
 export class UserMongoEntity {
