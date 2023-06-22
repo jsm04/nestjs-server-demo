@@ -7,12 +7,6 @@ export type ServerResponse<T> = {
 	data: T
 }
 
-export type BaseRecord<TEntity, TKey> = TEntity & {
-	id: TKey
-	createdAt: Date
-	updatedAt: Date
-}
-
 export type MongoDbError = Error & {
 	index: number
 	code: number

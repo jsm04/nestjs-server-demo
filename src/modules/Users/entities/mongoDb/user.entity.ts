@@ -1,6 +1,8 @@
-import { Schema } from 'mongoose'
+import { Document, Schema } from 'mongoose'
 import { availableRoles } from '../../../../shared/constants/constants'
 import { User } from '../user.interface'
+
+export type UserDocument = User & Document
 
 export class UserMongoEntity {
 	public static get schema() {

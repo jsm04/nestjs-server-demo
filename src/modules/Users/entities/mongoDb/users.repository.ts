@@ -1,41 +1,21 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { Model, ObjectId } from 'mongoose'
+import { UsersRepository } from 'src/database/interfaces/user.repository'
+import { MongoDbRepository } from '../../../../database/mongoDb/abstract.repository'
 import { PROVIDERS } from '../../../../shared/constants/tokens'
-import { UsersRepository } from '../../../../shared/types/interfaces'
-import { UpdateUserDTO } from '../../dto/update-user.dto'
-import { User } from '../user.interface'
+import { UserDocument } from './user.entity'
 
 @Injectable()
-export class UsersMongoRepository implements UsersRepository<User, ObjectId> {
-	constructor(@Inject(PROVIDERS.USER_MODEL) private userModel: Model<User>) {}
-
-	public async create(payload: User): Promise<User> {
-		return await this.userModel.create(payload)
+export class UsersMongoRepository extends MongoDbRepository<UserDocument> implements UsersRepository<UserDocument, ObjectId> {
+	constructor(@Inject(PROVIDERS.USER_MODEL) private userModel: Model<UserDocument>) {
+		super(userModel)
 	}
 
-	public async list(): Promise<User[] | null> {
-		const query = await this.userModel.find()
-		return query ?? null
+	async getByUsername(username: string, projection?: Record<string, unknown>): Promise<UserDocument | null> {
+		return await super.getOne({ username: username }, projection)
 	}
 
-	public async getById(id: ObjectId): Promise<User | null> {
-		const query = await this.userModel.findById(id)
-		return query ?? null
-	}
-
-	public async getByEmail(email: string): Promise<User> {
-		return await this.userModel.findOne({ email }).select('+password')
-	}
-
-	public async getByUsername(username: string): Promise<User> {
-		return await this.userModel.findOne({ username })
-	}
-
-	public async update(id: ObjectId, data: UpdateUserDTO): Promise<User> {
-		return await this.userModel.findOneAndUpdate(id, data)
-	}
-
-	public async delete(id: ObjectId): Promise<User> {
-		return await this.userModel.findOneAndDelete(id)
+	async getByEmail(email: string, projection?: Record<string, unknown>): Promise<UserDocument | null> {
+		return await super.getOne({ email: email }, projection)
 	}
 }

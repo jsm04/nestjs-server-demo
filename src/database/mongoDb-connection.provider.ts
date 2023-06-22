@@ -6,7 +6,7 @@ import { Provider } from '@nestjs/common'
 export const mongoDbConnectionProvider = <Provider>{
 	provide: PROVIDERS.MONGODB_CONNECTION,
 	inject: [ConfigService],
-	useFactory: async (configService: ConfigService): Promise<typeof mongoose> =>
-		mongoose.connect(configService.get<'string'>('mongoDb.uri')),
-
+	useFactory: async (configService: ConfigService): Promise<typeof mongoose> => {
+		return mongoose.connect(configService.get<'string'>('mongoDb.uri'))
+	},
 }

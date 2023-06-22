@@ -28,7 +28,7 @@ export class ControllerExeptionManager {
 				stack: e.stack ?? null,
 			}
 			this._fsLogger.error(buildError)
-			throw new InternalServerErrorException()
+			throw new InternalServerErrorException('Something went wrong, try again later or contact administrators')
 		}
 	}
 
@@ -43,12 +43,11 @@ export class ControllerExeptionManager {
 			keyValue: e.keyValue,
 		}
 
+		const handler = mongoDbErrorIndex[e.code]
+
 		if (process.env.NODE_ENV === 'development') {
-			this._fsLogger.error(buildError)
 			console.log(e)
 		}
-
-		const handler = mongoDbErrorIndex[e.code]
 
 		if (!handler) {
 			this._fsLogger.error(buildError)
