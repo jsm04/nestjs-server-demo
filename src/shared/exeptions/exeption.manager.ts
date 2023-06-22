@@ -1,5 +1,6 @@
-import { ConflictException, Inject, Injectable, InternalServerErrorException } from '@nestjs/common'
+import { ConflictException, HttpException, Injectable, InternalServerErrorException } from '@nestjs/common'
 import { FslogService } from '../services/fslog.service'
+import { MongoDbError } from '../types'
 
 const mongoDbErrorIndex = {
 	'11000': (key: string) => `${key} already in use.`,
@@ -7,8 +8,7 @@ const mongoDbErrorIndex = {
 
 @Injectable()
 export class ControllerExeptionManager {
-	@Inject(FslogService)
-	private _fsLogger: FslogService
+	constructor(private _fsLogger: FslogService) {}
 
 	public handleError(e: any) {
 		const isMongoDbError = e.name === 'MongoServerError'
@@ -17,18 +17,41 @@ export class ControllerExeptionManager {
 			this.handleMongoError(e)
 		}
 
-		throw e
+		if (e instanceof HttpException) {
+			throw e
+		}
+
+		if (e instanceof Error) {
+			const buildError = {
+				name: e.name,
+				message: e.message,
+				stack: e.stack ?? null,
+			}
+			this._fsLogger.error(buildError)
+			throw new InternalServerErrorException()
+		}
 	}
 
 	private handleMongoError(e: MongoDbError) {
-		if (process.env.NODE_ENV === 'development') {
-			console.log(e)
-			this._fsLogger.debug(e)
+		const buildError = {
+			name: e.name,
+			message: e.message,
+			stack: e.stack ?? null,
+			index: e.index,
+			code: e.code,
+			keyPattern: e.keyPattern,
+			keyValue: e.keyValue,
 		}
+
+		if (process.env.NODE_ENV === 'development') {
+			this._fsLogger.error(buildError)
+			console.log(e)
+		}
+
 		const handler = mongoDbErrorIndex[e.code]
 
 		if (!handler) {
-			this._fsLogger.error(e)
+			this._fsLogger.error(buildError)
 			throw new InternalServerErrorException()
 		}
 

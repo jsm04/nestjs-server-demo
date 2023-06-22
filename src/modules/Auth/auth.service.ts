@@ -16,7 +16,7 @@ export class AuthService {
 		private jwtService: JwtService,
 	) {}
 
-	async register(createUserDTO: CreateUserDTO) {
+	public async register(createUserDTO: CreateUserDTO) {
 		const hashedPassword = await this.encryptionService.hashValue(createUserDTO.password)
 		const user = { ...createUserDTO, password: hashedPassword }
 		await this.usersService.create(user)
@@ -24,19 +24,19 @@ export class AuthService {
 		return await this.validateCredentials(recordUser.email, createUserDTO.password)
 	}
 
-	async login(loginUserDTO: LoginUserDTO) {
+	public async login(loginUserDTO: LoginUserDTO) {
 		return await this.validateCredentials(loginUserDTO.email, loginUserDTO.password)
 	}
 
-	async validateCredentials(email: string, password: string) {
+	private async validateCredentials(email: string, password: string) {
 		const user = (await this.usersService.getByEmail(email)) as BaseRecord<User, ObjectId>
 		if (!user) throw new BadRequestException('Email not found.')
 		const hashValidation = await this.encryptionService.validateHash(password, user.password)
 		if (!hashValidation) throw new UnauthorizedException('Invalid password.')
-		return await this.createJwtToken(user)
+		return await this.singJwtToken(user)
 	}
 
-	private async createJwtToken(user: BaseRecord<User, ObjectId>) {
+	private async singJwtToken(user: BaseRecord<User, ObjectId>) {
 		const payload: TokenSingedContent<ObjectId> = { id: user.id, email: user.email, role: user.role }
 		return {
 			accessToken: await this.jwtService.signAsync(payload),
