@@ -3,7 +3,6 @@ import { ObjectId } from 'mongoose'
 import { CreateUserDTO } from '../Auth/dto/create-user.dto'
 import { UpdateUserDTO } from './dto/update-user.dto'
 import { UsersMongoRepository } from './entities/mongoDb/users.repository'
-import { User } from './entities/user.interface'
 
 @Injectable()
 export class UsersService {
@@ -35,7 +34,7 @@ export class UsersService {
 	}
 
 	public async update(id: ObjectId, user: UpdateUserDTO) {
-		return await this.userRepository.update(id, user)
+		return await this.userRepository.update({ _id: id }, user)
 	}
 
 	public async delete(id: ObjectId) {

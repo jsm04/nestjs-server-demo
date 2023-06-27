@@ -1,17 +1,29 @@
-import { IsEmail, IsNotEmpty, IsNumber, IsString, MaxLength } from 'class-validator'
+import { IsAlphanumeric, IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength, MinLength } from 'class-validator'
 import { User } from '../entities/user.interface'
 
-export class UpdateUserDTO implements Partial<Omit<User, 'password' | 'username' | 'sex'>> {
+export class UpdateUserDTO implements Partial<Omit<User, 'lastname' | 'sex' | 'role' | 'age'>> {
 	@MaxLength(32)
+	@MinLength(2)
 	@IsString()
-	firstname?: string
-	@IsString()
-	@MaxLength(32)
-	lastname?: string
-	@IsNumber()
-	age?: number
+	@IsNotEmpty()
+	@IsOptional()
+	firstname: string
 	@MaxLength(254)
+	@MinLength(3)
 	@IsEmail()
 	@IsNotEmpty()
-	email?: string
+	@IsOptional()
+	email: string
+	@MaxLength(64)
+	@MinLength(8)
+	@IsAlphanumeric()
+	@IsNotEmpty()
+	@IsOptional()
+	password: string
+	@MaxLength(32)
+	@MinLength(4)
+	@IsString()
+	@IsNotEmpty()
+	@IsOptional()
+	username: string
 }

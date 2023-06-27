@@ -18,6 +18,16 @@ export class ControllerExeptionManager {
 		}
 
 		if (e instanceof HttpException) {
+			if (this.isDevMode()) {
+				const buildHttpError = {
+					name: e.name,
+					message: e.message,
+					stack: e.stack ?? null,
+					cause: e.cause,
+					status: e.getStatus(),
+				}
+				this._fsLogger.http(buildHttpError)
+			}
 			throw e
 		}
 
@@ -28,12 +38,12 @@ export class ControllerExeptionManager {
 				stack: e.stack ?? null,
 			}
 			this._fsLogger.error(buildError)
-			throw new InternalServerErrorException('Something went wrong, try again later or contact administrators')
+			throw new InternalServerErrorException('Something went wrong, try again later or contact an administrator')
 		}
 	}
 
 	private handleMongoError(e: MongoDbError) {
-		const buildError = {
+		const buildMongoError = {
 			name: e.name,
 			message: e.message,
 			stack: e.stack ?? null,
@@ -45,12 +55,12 @@ export class ControllerExeptionManager {
 
 		const handler = mongoDbErrorIndex[e.code]
 
-		if (process.env.NODE_ENV === 'development') {
+		if (this.isDevMode()) {
 			console.log(e)
 		}
 
 		if (!handler) {
-			this._fsLogger.error(buildError)
+			this._fsLogger.error(buildMongoError)
 			throw new InternalServerErrorException()
 		}
 
@@ -58,5 +68,9 @@ export class ControllerExeptionManager {
 		const response = handler(pattern)
 
 		throw new ConflictException(response)
+	}
+
+	private isDevMode() {
+		return process.env.NODE_ENV === 'development'
 	}
 }
