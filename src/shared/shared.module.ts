@@ -5,7 +5,7 @@ import { FslogService } from './services/fslog.service'
 
 @Global()
 @Module({
-	providers: [FslogService, ControllerExeptionManager, EncryptionService],
-	exports: [FslogService, ControllerExeptionManager, EncryptionService],
+    providers: [FslogService, ControllerExeptionManager, EncryptionService],
+    exports: [FslogService, ControllerExeptionManager, EncryptionService],
 })
 export class SharedModule {}

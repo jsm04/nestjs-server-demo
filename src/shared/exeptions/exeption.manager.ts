@@ -3,74 +3,69 @@ import { FslogService } from '../services/fslog.service'
 import { MongoDbError } from '../types'
 
 const mongoDbErrorIndex = {
-	'11000': (key: string) => `${key} already in use.`,
+    '11000': (key: string) => `${key} already in use.`,
 }
 
 @Injectable()
 export class ControllerExeptionManager {
-	constructor(private _fsLogger: FslogService) {}
+    private isDevMode = process.env.NODE_ENV === 'development'
 
-	public handleError(e: any) {
-		const isMongoDbError = e.name === 'MongoServerError'
+    constructor(private _fsLogger: FslogService) {}
 
-		if (isMongoDbError) {
-			this.handleMongoError(e)
-		}
+    public handleError(error: any) {
+        const isMongoDbError = error.name === 'MongoServerError'
 
-		if (e instanceof HttpException) {
-			if (this.isDevMode()) {
-				const buildHttpError = {
-					name: e.name,
-					message: e.message,
-					stack: e.stack ?? null,
-					cause: e.cause,
-					status: e.getStatus(),
-				}
-				this._fsLogger.http(buildHttpError)
-			}
-			throw e
-		}
+        if (isMongoDbError) {
+            this.handleMongoError(error)
+        }
 
-		if (e instanceof Error) {
-			const buildError = {
-				name: e.name,
-				message: e.message,
-				stack: e.stack ?? null,
-			}
-			this._fsLogger.error(buildError)
-			throw new InternalServerErrorException('Something went wrong, try again later or contact an administrator')
-		}
-	}
+        if (error instanceof HttpException && this.isDevMode) {
+            this._fsLogger.http({
+                name: error.name,
+                message: error.message,
+                stack: error.stack ?? null,
+                cause: error.cause,
+                status: error.getStatus(),
+            })
+        } else if (error instanceof HttpException) {
+            return error
+        }
 
-	private handleMongoError(e: MongoDbError) {
-		const buildMongoError = {
-			name: e.name,
-			message: e.message,
-			stack: e.stack ?? null,
-			index: e.index,
-			code: e.code,
-			keyPattern: e.keyPattern,
-			keyValue: e.keyValue,
-		}
+        if (error instanceof Error) {
+            this._fsLogger.error({
+                name: error.name,
+                message: error.message,
+                stack: error.stack ?? null,
+            })
+            throw new InternalServerErrorException(this.internalServerErrorMessage())
+        }
+    }
 
-		const handler = mongoDbErrorIndex[e.code]
+    private handleMongoError(error: MongoDbError) {
+        const handler = mongoDbErrorIndex[error.code]
 
-		if (this.isDevMode()) {
-			console.log(e)
-		}
+        if (this.isDevMode) {
+            console.log(error)
+        }
 
-		if (!handler) {
-			this._fsLogger.error(buildMongoError)
-			throw new InternalServerErrorException()
-		}
+        if (!handler) {
+            this._fsLogger.error({
+                name: error.name,
+                message: error.message,
+                stack: error.stack ?? null,
+                index: error.index,
+                code: error.code,
+                keyPattern: error.keyPattern,
+                keyValue: error.keyValue,
+            })
+            throw new InternalServerErrorException(this.internalServerErrorMessage())
+        }
 
-		const pattern = Object.keys(e.keyPattern)[0]
-		const response = handler(pattern)
+        const pattern = Object.keys(error.keyPattern)[0]
+        const response = handler(pattern)
 
-		throw new ConflictException(response)
-	}
+        throw new ConflictException(response)
+    }
 
-	private isDevMode() {
-		return process.env.NODE_ENV === 'development'
-	}
+    private internalServerErrorMessage = () => 'Something went wrong, try again later or contact an administrator'
 }

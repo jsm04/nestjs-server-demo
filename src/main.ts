@@ -8,21 +8,21 @@ import { AppModule } from './app.module'
 bootstrap()
 
 async function bootstrap() {
-	const app = await NestFactory.create(AppModule)
-	const configService = app.get(ConfigService)
-	const port = configService.get('PORT')
+    const app = await NestFactory.create(AppModule)
+    const configService = app.get(ConfigService)
+    const port = configService.get('PORT')
 
-	app.setGlobalPrefix('api/v1')
+    app.setGlobalPrefix('api/v1')
 
-	app.use(compression())
-	app.enableCors()
-	app.use(helmet())
+    app.use(compression())
+    app.enableCors()
+    app.use(helmet())
 
-	app.useGlobalPipes(
-		new ValidationPipe({
-			transform: true,
-			whitelist: true,
-		}),
-	)
-	await app.listen(port)
+    app.useGlobalPipes(
+        new ValidationPipe({
+            transform: true,
+            whitelist: true,
+        }),
+    )
+    await app.listen(port)
 }

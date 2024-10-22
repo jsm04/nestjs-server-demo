@@ -8,25 +8,25 @@ import { AuthController } from './auth.controller'
 import { AuthService } from './auth.service'
 
 @Module({
-	imports: [
-		UsersModule,
-		JwtModule.register({
-			global: true,
-			secret: process.env.JWT_SECRET,
-			signOptions: { expiresIn: '1 day' },
-		}),
-	],
-	providers: [
-		AuthService,
-		{
-			provide: APP_GUARD,
-			useClass: AuthGuard,
-		},
-		{
-			provide: APP_GUARD,
-			useClass: RoleGuard,
-		},
-	],
-	controllers: [AuthController],
+    imports: [
+        UsersModule,
+        JwtModule.register({
+            global: true,
+            secret: process.env.JWT_SECRET,
+            signOptions: { expiresIn: '1 day' },
+        }),
+    ],
+    providers: [
+        AuthService,
+        {
+            provide: APP_GUARD,
+            useClass: AuthGuard,
+        },
+        {
+            provide: APP_GUARD,
+            useClass: RoleGuard,
+        },
+    ],
+    controllers: [AuthController],
 })
 export class AuthModule {}

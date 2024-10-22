@@ -6,33 +6,33 @@ import { Roles } from '../../shared/types'
 
 @Injectable()
 export class RoleGuard implements CanActivate {
-	constructor(private reflector: Reflector) {}
+    constructor(private reflector: Reflector) {}
 
-	canActivate(context: ExecutionContext): boolean {
-		const requiredRole = this.reflector.get<string>(ROLE_KEY, context.getHandler())
+    canActivate(ctx: ExecutionContext): boolean {
+        const requiredRole = this.reflector.get<string>(ROLE_KEY, ctx.getHandler())
 
-		if (!requiredRole) {
-			return true
-		}
+        if (!requiredRole) {
+            return true
+        }
 
-		const request = context.switchToHttp().getRequest()
-		const userRole = request['user'].role
+        const request = ctx.switchToHttp().getRequest()
+        const userRole = request['user'].role
 
-		if (!userRole) throw new UnauthorizedException()
+        if (!userRole) throw new UnauthorizedException()
 
-		return this.matchPermissions(requiredRole, userRole)
-	}
+        return this.matchPermissions(requiredRole, userRole)
+    }
 
-	private matchPermissions(metadataRole: string, role: Roles) {
-		switch (metadataRole) {
-			case ROLES.member:
-				return role === ROLES.member || role === ROLES.admin || role === ROLES.super_admin
-			case ROLES.admin:
-				return role === ROLES.admin || role === ROLES.super_admin
-			case ROLES.super_admin:
-				return role === ROLES.super_admin
-			default:
-				break
-		}
-	}
+    private matchPermissions(metadataRole: string, role: Roles) {
+        switch (metadataRole) {
+            case ROLES.member:
+                return role === ROLES.member || role === ROLES.admin || role === ROLES.super_admin
+            case ROLES.admin:
+                return role === ROLES.admin || role === ROLES.super_admin
+            case ROLES.super_admin:
+                return role === ROLES.super_admin
+            default:
+                break
+        }
+    }
 }
