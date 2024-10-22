@@ -2,7 +2,7 @@ import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/
 import { JwtService } from '@nestjs/jwt'
 import { ObjectId } from 'mongoose'
 import { EncryptionService } from '../../shared/services/encryption.service'
-import { TokenSingedContent } from '../../shared/types'
+import { SingedToken } from '../../shared/types'
 import { UserDocument } from '../Users/entities/mongodb/user.entity'
 import { UsersService } from '../Users/users.service'
 import { CreateUserDTO } from './dto/create-user.dto'
@@ -16,7 +16,7 @@ export class AuthService {
         private jwtService: JwtService,
     ) {}
 
-    public async register(createUserDTO: CreateUserDTO) {
+    async register(createUserDTO: CreateUserDTO) {
         const hashedPassword = await this.encryptionService.hashValue(createUserDTO.password)
         const user = { ...createUserDTO, password: hashedPassword }
         await this.usersService.create(user)
@@ -24,7 +24,7 @@ export class AuthService {
         return await this.validateCredentials(recordUser.email, createUserDTO.password)
     }
 
-    public async login(loginUserDTO: LoginUserDTO) {
+    async login(loginUserDTO: LoginUserDTO) {
         return await this.validateCredentials(loginUserDTO.email, loginUserDTO.password)
     }
 
@@ -37,7 +37,7 @@ export class AuthService {
     }
 
     private async singJwtToken(user: UserDocument) {
-        const payload: TokenSingedContent<ObjectId> = { id: user.id, email: user.email, role: user.role }
+        const payload: SingedToken<ObjectId> = { id: user.id, email: user.email, role: user.role }
         return {
             accessToken: await this.jwtService.signAsync(payload),
             emissionDate: new Date().toUTCString(),

@@ -1,8 +1,8 @@
-export const ROLES = {
-    super_admin: 'super_admin',
-    admin: 'admin',
-    member: 'member',
-    user: 'user',
+export const ROLES_ENUM = {
+    super_admin: 1,
+    admin: 2,
+    member: 3,
+    user: 4,
 } as const
 
-export const availableRoles = Object.values(ROLES)
+export const AVAILABLE_ROLES = Object.keys(ROLES_ENUM)

@@ -1,7 +1,7 @@
 import { Document, FilterQuery, Model, ObjectId, UpdateQuery } from 'mongoose'
 import { GenericRepository } from '../interfaces/generic.repository'
 
-export abstract class MongoDbRepository<TDocument extends Document> implements GenericRepository<TDocument, ObjectId> {
+export abstract class MongodbRepository<TDocument extends Document> implements GenericRepository<TDocument, ObjectId> {
     constructor(protected readonly entityModel: Model<TDocument>) {}
 
     public async list(): Promise<TDocument[]> {

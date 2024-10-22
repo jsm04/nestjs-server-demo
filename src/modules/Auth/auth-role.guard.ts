@@ -1,38 +1,31 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
-import { ROLES } from '../../shared/constants/constants'
-import { ROLE_KEY } from '../../shared/constants/keys'
+import { ROLES_ENUM } from '../../shared/constants/constants'
 import { Roles } from '../../shared/types'
+import { ROLE_METADATA_KEY } from '../../shared/decorators/roles.decorator'
 
 @Injectable()
 export class RoleGuard implements CanActivate {
     constructor(private reflector: Reflector) {}
 
     canActivate(ctx: ExecutionContext): boolean {
-        const requiredRole = this.reflector.get<string>(ROLE_KEY, ctx.getHandler())
+        const requiredRoleLevel = this.reflector.getAllAndOverride<number>(ROLE_METADATA_KEY, [ctx.getHandler(), ctx.getClass()])
 
-        if (!requiredRole) {
+        // Escape the guard if no required role level
+        if (!requiredRoleLevel) {
             return true
         }
 
         const request = ctx.switchToHttp().getRequest()
-        const userRole = request['user'].role
+        const currentUserRoleLevelKey: Roles | undefined = request['user']?.role
 
-        if (!userRole) throw new UnauthorizedException()
+        if (!currentUserRoleLevelKey || currentUserRoleLevelKey == 'user')
+            throw new UnauthorizedException('Current role doesnt match required permission for accessing this resourse.')
 
-        return this.matchPermissions(requiredRole, userRole)
-    }
+        const userRoleLevel = ROLES_ENUM[currentUserRoleLevelKey]
 
-    private matchPermissions(metadataRole: string, role: Roles) {
-        switch (metadataRole) {
-            case ROLES.member:
-                return role === ROLES.member || role === ROLES.admin || role === ROLES.super_admin
-            case ROLES.admin:
-                return role === ROLES.admin || role === ROLES.super_admin
-            case ROLES.super_admin:
-                return role === ROLES.super_admin
-            default:
-                break
-        }
+        // Evaluate if required role level for the context is sufficient
+        // (lower is better, meaning super user is equivalent to 1 )
+        return requiredRoleLevel <= userRoleLevel
     }
 }

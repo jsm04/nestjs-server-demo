@@ -2,7 +2,7 @@ import { IsAlphanumeric, IsEmail, IsNotEmpty, MaxLength, MinLength } from 'class
 import { User } from '../../Users/entities/user.interface'
 
 export class LoginUserDTO implements Pick<User, 'email' | 'password'> {
-    @MaxLength(254)
+    @MaxLength(255)
     @IsEmail()
     @IsNotEmpty()
     email: string

@@ -1,21 +1,23 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Inject, Param, Post, Put } from '@nestjs/common'
+import { Body, Controller, Get, HttpStatus, Inject, Param, Post, Put } from '@nestjs/common'
 import { ObjectId } from 'mongoose'
-import { ControllerExeptionManager } from '../../shared/exeptions/exeption.manager'
+import { ControllerExceptionManager } from '../../shared/exceptions/exception.manager'
 import { MongoObjectIdValidationPipe } from '../../shared/pipes/id-validation.pipe'
 import { ServerResponse } from '../../shared/types'
 import { CreateUserDTO } from '../Auth/dto/create-user.dto'
 import { UsersService } from './users.service'
 import { UpdateUserDTO } from './dto/update-user.dto'
 import { RequireRoleGuard } from '../../shared/decorators/roles.decorator'
+import { RequireJwt } from '../../shared/decorators/jwt.decorator'
 
 @Controller('users')
-@RequireRoleGuard('admin')
+// @RequireRoleGuard('member')
 export class UsersController {
-    @Inject(ControllerExeptionManager)
-    private controllerExeptionManager: ControllerExeptionManager
+    @Inject(ControllerExceptionManager)
+    private controllerExeptionManager: ControllerExceptionManager
 
     constructor(private readonly usersService: UsersService) {}
 
+    // @RequireJwt()
     @Get('list')
     async listUsers() {
         try {
@@ -26,7 +28,7 @@ export class UsersController {
                 data: payload,
             }
         } catch (e) {
-            this.controllerExeptionManager.handleError(e)
+            this.controllerExeptionManager.handle(e)
         }
     }
 
@@ -40,12 +42,11 @@ export class UsersController {
                 data: payload,
             }
         } catch (e) {
-            this.controllerExeptionManager.handleError(e)
+            this.controllerExeptionManager.handle(e)
         }
     }
 
     @Post()
-    @HttpCode(HttpStatus.CREATED)
     async createUser(@Body() createUserDTO: CreateUserDTO) {
         try {
             const payload = await this.usersService.create(createUserDTO)
@@ -55,12 +56,11 @@ export class UsersController {
                 data: payload,
             }
         } catch (e) {
-            this.controllerExeptionManager.handleError(e)
+            this.controllerExeptionManager.handle(e)
         }
     }
 
     @Put(':id')
-    @HttpCode(HttpStatus.OK)
     async updateUser(@Param('id', MongoObjectIdValidationPipe) id: ObjectId, @Body() updateUserDTO: UpdateUserDTO) {
         try {
             const payload = await this.usersService.update(id, updateUserDTO)
@@ -70,7 +70,7 @@ export class UsersController {
                 data: payload,
             }
         } catch (e) {
-            this.controllerExeptionManager.handleError(e)
+            this.controllerExeptionManager.handle(e)
         }
     }
 }

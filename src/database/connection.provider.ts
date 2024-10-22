@@ -3,10 +3,11 @@ import * as mongoose from 'mongoose'
 import { MONGODB_CONNECTION } from '../shared/constants/providers'
 import { Provider } from '@nestjs/common'
 
-export const mongoDbConnectionProvider = <Provider>{
+export const mongodbConnectionProvider = <Provider>{
     provide: MONGODB_CONNECTION,
     inject: [ConfigService],
     useFactory: async (configService: ConfigService): Promise<typeof mongoose> => {
-        return mongoose.connect(configService.get<'string'>('mongoDb.uri'))
+        const mongodbConnectionUri = configService.get<'string'>('mongodb.uri')
+        return mongoose.connect(mongodbConnectionUri)
     },
 }

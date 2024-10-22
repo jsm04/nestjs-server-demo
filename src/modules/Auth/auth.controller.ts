@@ -1,7 +1,6 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Inject, Post, Request } from '@nestjs/common'
 import { ObjectId } from 'mongoose'
-import { Public } from '../../shared/decorators/public.decorator'
-import { ControllerExeptionManager } from '../../shared/exeptions/exeption.manager'
+import { ControllerExceptionManager } from '../../shared/exceptions/exception.manager'
 import { ServerResponse, SingedUserRequest } from '../../shared/types'
 import { AuthService } from './auth.service'
 import { CreateUserDTO } from './dto/create-user.dto'
@@ -11,13 +10,12 @@ import { RequireRoleGuard } from '../../shared/decorators/roles.decorator'
 @Controller('auth')
 export class AuthController {
     @Inject()
-    private controllerExeptionManager: ControllerExeptionManager
+    private controllerExeptionManager: ControllerExceptionManager
 
     constructor(private authService: AuthService) {}
 
     @Post('register')
     @HttpCode(HttpStatus.CREATED)
-    @Public()
     async register(@Body() createUserDTO: CreateUserDTO) {
         try {
             const payload = await this.authService.register(createUserDTO)
@@ -27,12 +25,11 @@ export class AuthController {
                 data: payload,
             }
         } catch (e) {
-            this.controllerExeptionManager.handleError(e)
+            this.controllerExeptionManager.handle(e)
         }
     }
 
     @Post('login')
-    @Public()
     async login(@Body() loginUserDTO: LoginUserDTO) {
         try {
             const payload = await this.authService.login(loginUserDTO)
@@ -42,7 +39,7 @@ export class AuthController {
                 data: payload,
             }
         } catch (e) {
-            this.controllerExeptionManager.handleError(e)
+            this.controllerExeptionManager.handle(e)
         }
     }
 

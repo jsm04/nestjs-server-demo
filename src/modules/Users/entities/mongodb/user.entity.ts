@@ -1,10 +1,10 @@
 import { Document, Schema } from 'mongoose'
-import { availableRoles } from '../../../../shared/constants/constants'
+import { AVAILABLE_ROLES } from '../../../../shared/constants/constants'
 import { User } from '../user.interface'
 
 export type UserDocument = User & Document
 
-export class UserMongoEntity {
+export class MongodbUserEntity {
     public static get schema() {
         return new Schema<User>(
             {
@@ -15,7 +15,7 @@ export class UserMongoEntity {
                 username: { type: String, required: true, unique: true },
                 email: { type: String, required: true, unique: true },
                 age: { type: Number, required: true },
-                role: { type: String, enum: [...availableRoles], default: 'user' },
+                role: { type: String, enum: [...AVAILABLE_ROLES], default: 'user' },
             },
             { timestamps: true },
         )

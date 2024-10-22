@@ -1,5 +1,6 @@
 import { SetMetadata } from '@nestjs/common'
-import { ROLE_KEY } from '../constants/keys'
 import { AuthenticatedRoles } from '../types'
+import { ROLES_ENUM } from '../constants/constants'
 
-export const RequireRoleGuard = (role: AuthenticatedRoles) => SetMetadata(ROLE_KEY, role)
+export const ROLE_METADATA_KEY = Symbol('role')
+export const RequireRoleGuard = (roleEnumKey: AuthenticatedRoles) => SetMetadata(ROLE_METADATA_KEY, ROLES_ENUM[roleEnumKey])

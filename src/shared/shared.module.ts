@@ -1,11 +1,11 @@
 import { Global, Module } from '@nestjs/common'
-import { ControllerExeptionManager } from './exeptions/exeption.manager'
+import { ControllerExceptionManager } from './exceptions/exception.manager'
 import { EncryptionService } from './services/encryption.service'
-import { FslogService } from './services/fslog.service'
+import { FilesystemLoggerService } from './services/filesyslog.service'
 
 @Global()
 @Module({
-    providers: [FslogService, ControllerExeptionManager, EncryptionService],
-    exports: [FslogService, ControllerExeptionManager, EncryptionService],
+    providers: [FilesystemLoggerService, ControllerExceptionManager, EncryptionService],
+    exports: [FilesystemLoggerService, ControllerExceptionManager, EncryptionService],
 })
 export class SharedModule {}

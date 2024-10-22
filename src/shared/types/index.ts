@@ -1,29 +1,27 @@
 import { HttpStatus } from '@nestjs/common'
-import { ROLES } from '../constants/constants'
+import { ROLES_ENUM } from '../constants/constants'
 
 export type ServerResponse<T> = {
-    statusCode: HttpStatus
+    statusCode?: HttpStatus
     message: string
     data: T
 }
 
-export type MongoDbError = Error & {
+export type MongodbError = Error & {
     index: number
     code: number
     keyPattern: Record<string, number>
     keyValue: Record<string, string>
 }
 
-export type Roles = keyof typeof ROLES
+export type Roles = keyof typeof ROLES_ENUM
+type OmitRegularUser = Omit<typeof ROLES_ENUM, 'user'>
+export type AuthenticatedRoles = keyof OmitRegularUser
 
-type AuthenticatedRolesOmit = Omit<typeof ROLES, 'user'>
-
-export type AuthenticatedRoles = keyof AuthenticatedRolesOmit
-
-export type TokenSingedContent<TKey> = {
+export type SingedToken<TKey> = {
     id: TKey
     email: string
     role: Roles
 }
 
-export type SingedUserRequest<TKey> = Request & Record<'user', TokenSingedContent<TKey>>
+export type SingedUserRequest<TKey> = Request & Record<'user', SingedToken<TKey>>

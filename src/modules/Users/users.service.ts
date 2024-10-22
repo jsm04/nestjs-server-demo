@@ -2,11 +2,11 @@ import { Injectable } from '@nestjs/common'
 import { ObjectId } from 'mongoose'
 import { CreateUserDTO } from '../Auth/dto/create-user.dto'
 import { UpdateUserDTO } from './dto/update-user.dto'
-import { UsersMongoRepository } from './entities/mongodb/users.repository'
+import { MongodbUserRepository } from './entities/mongodb/users.repository'
 
 @Injectable()
 export class UsersService {
-    constructor(private userRepository: UsersMongoRepository) {}
+    constructor(private userRepository: MongodbUserRepository) {}
 
     public async list() {
         const query = await this.userRepository.list()
