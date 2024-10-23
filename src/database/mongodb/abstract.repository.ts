@@ -54,6 +54,6 @@ export abstract class MongodbRepository<TDocument extends Document> implements G
     }
 
     public async delete(id: ObjectId): Promise<TDocument> {
-        return await this.entityModel.findByIdAndDelete(id)
+        return this.entityModel.findByIdAndDelete(id)
     }
 }
