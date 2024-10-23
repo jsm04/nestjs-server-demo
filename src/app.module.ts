@@ -1,19 +1,11 @@
 import { Module } from '@nestjs/common'
-import { ThrottlerModule } from '@nestjs/throttler'
+import { ThrottlerModule, ThrottlerModuleOptions } from '@nestjs/throttler'
 import { ConfigsModule } from './config/configs.module'
 import { UsersModule } from './modules/Users/users.module'
 import { AuthModule } from './modules/Auth/auth.module'
 
 @Module({
-    imports: [
-        UsersModule,
-        ConfigsModule,
-        ThrottlerModule.forRoot({
-            ttl: 60,
-            limit: 10,
-        }),
-        AuthModule,
-    ],
+    imports: [UsersModule, ConfigsModule, ThrottlerModule.forRoot(), AuthModule],
     controllers: [],
     providers: [],
 })

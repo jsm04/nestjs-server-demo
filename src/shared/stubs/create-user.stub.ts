@@ -3,12 +3,12 @@ import { User } from '../../modules/Users/entities/user.interface'
 
 export const createUserStub = () => {
     const user: User = {
-        firstname: faker.name.firstName(),
-        lastname: faker.name.lastName(),
-        age: Number(faker.random.numeric(2)),
+        firstname: faker.person.firstName(),
+        lastname: faker.person.lastName(),
+        age: Number(faker.number.int({min: 13, max: 127})),
         email: faker.internet.email(),
         username: faker.internet.userName(),
-        sex: faker.name.sex(),
+        sex: faker.person.sex(),
         password: faker.internet.password(),
         role: 'user',
     }
