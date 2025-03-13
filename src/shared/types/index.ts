@@ -1,8 +1,6 @@
-import { HttpStatus } from '@nestjs/common'
 import { ROLES_ENUM } from '../constants/constants'
 
 export type ServerResponse<T> = {
-    statusCode?: HttpStatus
     message: string
     data: T
 }

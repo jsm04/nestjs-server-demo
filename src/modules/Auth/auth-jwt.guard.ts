@@ -7,7 +7,11 @@ import { JWT_METADATA_KEY } from '../../shared/decorators/jwt.decorator'
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-    constructor(private jwtService: JwtService, private reflector: Reflector, private configService: ConfigService) {}
+    constructor(
+        private jwtService: JwtService,
+        private reflector: Reflector,
+        private configService: ConfigService,
+    ) {}
 
     async canActivate(ctx: ExecutionContext): Promise<boolean> {
         const requireJwt = this.reflector.getAllAndOverride<boolean>(JWT_METADATA_KEY, [ctx.getHandler(), ctx.getClass()])

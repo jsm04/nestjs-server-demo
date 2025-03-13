@@ -4,7 +4,7 @@ import { MongodbError } from '../types'
 import { MONGODB_ERROR_INDEX } from '../../database/mongodb/errors'
 
 @Injectable()
-export class ControllerExceptionManager {
+export class ExceptionManager {
     private isDevelopment = process.env.NODE_ENV === 'development'
 
     constructor(private logger: FilesystemLoggerService) {}
